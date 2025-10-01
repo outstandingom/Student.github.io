@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System - Register</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #3498db;
+            --light-blue: #e8f4fc;
+            --dark-blue: #2980b9;
+            --white: #ffffff;
+            --gray-light: #f8f9fa;
+            --gray: #6c757d;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --error: #e74c3c;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--light-blue) 0%, var(--white) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+        
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .system-title {
+            color: var(--primary-blue);
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+        
+        .register-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+        
+        .register-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .welcome-heading {
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+        
+        .progress {
+            height: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .step-indicators {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+            border: 3px solid var(--gray-light);
+        }
+        
+        .step.active .step-circle {
+            background-color: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+        
+        .step.completed .step-circle {
+            background-color: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+        
+        .step-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+            text-align: center;
+        }
+        
+        .step.active .step-label {
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+        
+        /* Form Steps */
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Role Selection */
+        .role-cards {
+            display: flex;
+            justify-content: space-between;
+            margin: 1.5rem 0;
+            gap: 1rem;
+        }
+        
+        .role-card {
+            flex: 1;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .role-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-5px);
+        }
+        
+        .role-card.selected {
+            border-color: var(--primary-blue);
+            background-color: var(--light-blue);
+            transform: translateY(-5px);
+        }
+        
+        .role-icon {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+        
+        .role-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .role-description {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Form Styling */
+        .form-control {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            margin-bottom: 1rem;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        /* Profile Picture Upload */
+        .profile-upload {
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-upload:hover {
+            border-color: var(--primary-blue);
+            background-color: var(--light-blue);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+        
+        .profile-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            display: none;
+        }
+        
+        /* Password Strength */
+        .password-strength {
+            height: 5px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .strength-meter {
+            height: 100%;
+            width: 0;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .strength-weak {
+            background-color: var(--error);
+            width: 33%;
+        }
+        
+        .strength-medium {
+            background-color: var(--warning);
+            width: 66%;
+        }
+        
+        .strength-strong {
+            background-color: var(--success);
+            width: 100%;
+        }
+        
+        .strength-text {
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+        
+        /* Navigation Buttons */
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--dark-blue);
+            border-color: var(--dark-blue);
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+        
+        .login-link {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+        
+        .login-link:hover {
+            text-decoration: underline;
+        }
+        
+        .footer {
+            background-color: var(--white);
+            padding: 1rem 0;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .footer a {
+            color: var(--gray);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            color: var(--primary-blue);
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-size: 0.875rem;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .success-message {
+            color: var(--success);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .role-cards {
+                flex-direction: column;
+            }
+            
+            .step-label {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <div class="logo-placeholder">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h1 class="system-title">Student Management System</h1>
+                </div>
+                <div class="col-md-4 text-end">
+                    <select class="form-select form-select-sm w-auto d-inline-block">
+                        <option selected>English</option>
+                        <option>Español</option>
+                        <option>Français</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="register-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="register-card">
+                        <h2 class="welcome-heading">Create Your Account</h2>
+                        
+                        <!-- Progress Bar -->
+                        <div class="progress-container">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="step-indicators">
+                                <div class="step active" data-step="1">
+                                    <div class="step-circle">1</div>
+                                    <div class="step-label">Account Type</div>
+                                </div>
+                                <div class="step" data-step="2">
+                                    <div class="step-circle">2</div>
+                                    <div class="step-label">Personal Info</div>
+                                </div>
+                                <div class="step" data-step="3">
+                                    <div class="step-circle">3</div>
+                                    <div class="step-label">Academic Details</div>
+                                </div>
+                                <div class="step" data-step="4">
+                                    <div class="step-circle">4</div>
+                                    <div class="step-label">Credentials</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Registration Form -->
+                        <form id="registrationForm">
+                            <!-- Step 1: Account Type -->
+                            <div class="form-step active" id="step1">
+                                <h4 class="mb-4 text-center">Select Your Account Type</h4>
+                                
+                                <div class="role-cards">
+                                    <div class="role-card" data-role="student">
+                                        <div class="role-icon">
+                                            <i class="fas fa-user-graduate"></i>
+                                        </div>
+                                        <div class="role-name">Student</div>
+                                        <div class="role-description">
+                                            Access course materials, submit assignments, and track your academic progress.
+                                        </div>
+                                    </div>
+                                    <div class="role-card" data-role="teacher">
+                                        <div class="role-icon">
+                                            <i class="fas fa-chalkboard-teacher"></i>
+                                        </div>
+                                        <div class="role-name">Teacher</div>
+                                        <div class="role-description">
+                                            Manage courses, create assignments, and evaluate student performance.
+                                        </div>
+                                    </div>
+                                    <div class="role-card" data-role="admin">
+                                        <div class="role-icon">
+                                            <i class="fas fa-shield-alt"></i>
+                                        </div>
+                                        <div class="role-name">Administrator</div>
+                                        <div class="role-description">
+                                            Manage system users, courses, and oversee institutional operations.
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-navigation">
+                                    <div></div> <!-- Empty div for spacing -->
+                                    <button type="button" class="btn btn-primary next-step" data-next="2">Next</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 2: Personal Information -->
+                            <div class="form-step" id="step2">
+                                <h4 class="mb-4 text-center">Personal Information</h4>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="fullName" class="form-label">Full Name</label>
+                                            <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" required>
+                                            <div class="error-message" id="nameError">Please enter your full name</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email Address</label>
+                                            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                                            <div class="error-message" id="emailError">Please enter a valid email address</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="phone" class="form-label">Phone Number</label>
+                                            <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="dob" class="form-label">Date of Birth</label>
+                                            <input type="date" class="form-control" id="dob" required>
+                                            <div class="error-message" id="dobError">Please enter your date of birth</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="address" class="form-label">Address</label>
+                                            <textarea class="form-control" id="address" rows="3" placeholder="Enter your address"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="profileImageUrl" class="form-label">Profile Image URL</label>
+                                    <input type="url" class="form-control" id="profileImageUrl" placeholder="Enter image URL (optional)">
+                                    <div class="form-text">Provide a URL to your profile picture (optional)</div>
+                                </div>
+                                
+                                <div class="form-navigation">
+                                    <button type="button" class="btn btn-outline-primary prev-step" data-prev="1">Back</button>
+                                    <button type="button" class="btn btn-primary next-step" data-next="3">Next</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 3: Academic Details (Role-specific) -->
+                            <div class="form-step" id="step3">
+                                <h4 class="mb-4 text-center">Academic Details</h4>
+                                
+                                <div id="studentFields">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="batchCode" class="form-label">Batch Code</label>
+                                                <input type="text" class="form-control" id="batchCode" placeholder="Enter batch code">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="rollNumber" class="form-label">Roll Number</label>
+                                                <input type="text" class="form-control" id="rollNumber" placeholder="Enter roll number">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="parentName" class="form-label">Parent/Guardian Name</label>
+                                                <input type="text" class="form-control" id="parentName" placeholder="Enter parent/guardian name">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="parentPhone" class="form-label">Parent/Guardian Phone</label>
+                                                <input type="tel" class="form-control" id="parentPhone" placeholder="Enter parent/guardian phone">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="teacherFields" style="display: none;">
+                                    <div class="mb-3">
+                                        <label for="subjectSpecialization" class="form-label">Subject Specialization</label>
+                                        <input type="text" class="form-control" id="subjectSpecialization" placeholder="Enter your subject specialization">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="experience" class="form-label">Years of Experience</label>
+                                        <input type="number" class="form-control" id="experience" placeholder="Enter years of experience" min="0">
+                                    </div>
+                                </div>
+                                
+                                <div id="adminFields" style="display: none;">
+                                    <div class="mb-3">
+                                        <label for="adminRole" class="form-label">Administrative Role</label>
+                                        <select class="form-control" id="adminRole">
+                                            <option value="">Select your role</option>
+                                            <option value="academic">Academic Administrator</option>
+                                            <option value="system">System Administrator</option>
+                                            <option value="finance">Financial Administrator</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="adminId" class="form-label">Administrator ID</label>
+                                        <input type="text" class="form-control" id="adminId" placeholder="Enter your administrator ID">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-navigation">
+                                    <button type="button" class="btn btn-outline-primary prev-step" data-prev="2">Back</button>
+                                    <button type="button" class="btn btn-primary next-step" data-next="4">Next</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 4: Credentials -->
+                            <div class="form-step" id="step4">
+                                <h4 class="mb-4 text-center">Set Your Credentials</h4>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">Password</label>
+                                            <input type="password" class="form-control" id="password" placeholder="Create a password" required>
+                                            <div class="password-strength">
+                                                <div class="strength-meter" id="strengthMeter"></div>
+                                            </div>
+                                            <div class="strength-text" id="strengthText">Password strength</div>
+                                            <div class="error-message" id="passwordError">Password must be at least 8 characters</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
+                                            <div class="error-message" id="confirmPasswordError">Passwords do not match</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="termsAgreement" required>
+                                        <label class="form-check-label" for="termsAgreement">
+                                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                                        </label>
+                                    </div>
+                                    <div class="error-message" id="termsError">You must agree to the terms and conditions</div>
+                                </div>
+                                
+                                <div class="form-navigation">
+                                    <button type="button" class="btn btn-outline-primary prev-step" data-prev="3">Back</button>
+                                    <button type="submit" class="btn btn-primary" id="submitBtn">Create Account</button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <div class="text-center mt-4">
+                            <span>Already have an account? <a href="login.html" class="login-link">Login here</a></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    &copy; 2023 Student Management System. All rights reserved.
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="me-3">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://nupoiwojccgxtqnzwfhk.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51cG9pd29qY2NneHRxbnp3ZmhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxNzc0MTEsImV4cCI6MjA3NDc1MzQxMX0.yw_XltusJ4sC_pct1aO2vNZ70-RpAiNbP-HVu0YaZTs';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Current step tracking
+            let currentStep = 1;
+            let selectedRole = null;
+            
+            // DOM Elements
+            const progressBar = document.querySelector('.progress-bar');
+            const steps = document.querySelectorAll('.step');
+            const formSteps = document.querySelectorAll('.form-step');
+            const roleCards = document.querySelectorAll('.role-card');
+            const nextButtons = document.querySelectorAll('.next-step');
+            const prevButtons = document.querySelectorAll('.prev-step');
+            const studentFields = document.getElementById('studentFields');
+            const teacherFields = document.getElementById('teacherFields');
+            const adminFields = document.getElementById('adminFields');
+            const passwordInput = document.getElementById('password');
+            const strengthMeter = document.getElementById('strengthMeter');
+            const strengthText = document.getElementById('strengthText');
+            const registrationForm = document.getElementById('registrationForm');
+            
+            // Role Selection
+            roleCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards
+                    roleCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                    selectedRole = this.getAttribute('data-role');
+                    
+                    // Update academic details based on role
+                    updateAcademicFields();
+                });
+            });
+            
+            // Update academic fields based on selected role
+            function updateAcademicFields() {
+                // Hide all fields first
+                studentFields.style.display = 'none';
+                teacherFields.style.display = 'none';
+                adminFields.style.display = 'none';
+                
+                // Show fields based on selected role
+                if (selectedRole === 'student') {
+                    studentFields.style.display = 'block';
+                } else if (selectedRole === 'teacher') {
+                    teacherFields.style.display = 'block';
+                } else if (selectedRole === 'admin') {
+                    adminFields.style.display = 'block';
+                }
+            }
+            
+            // Password Strength Meter
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                let message = '';
+                
+                // Check password length
+                if (password.length >= 8) {
+                    strength += 1;
+                }
+                
+                // Check for lowercase letters
+                if (/[a-z]/.test(password)) {
+                    strength += 1;
+                }
+                
+                // Check for uppercase letters
+                if (/[A-Z]/.test(password)) {
+                    strength += 1;
+                }
+                
+                // Check for numbers
+                if (/[0-9]/.test(password)) {
+                    strength += 1;
+                }
+                
+                // Check for special characters
+                if (/[^A-Za-z0-9]/.test(password)) {
+                    strength += 1;
+                }
+                
+                // Update strength meter
+                strengthMeter.className = 'strength-meter';
+                if (strength <= 2) {
+                    strengthMeter.classList.add('strength-weak');
+                    message = 'Weak password';
+                } else if (strength <= 4) {
+                    strengthMeter.classList.add('strength-medium');
+                    message = 'Medium strength password';
+                } else {
+                    strengthMeter.classList.add('strength-strong');
+                    message = 'Strong password';
+                }
+                
+                strengthText.textContent = message;
+            });
+            
+            // Form Navigation
+            nextButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const nextStep = parseInt(this.getAttribute('data-next'));
+                    
+                    // Validate current step before proceeding
+                    if (validateStep(currentStep)) {
+                        goToStep(nextStep);
+                    }
+                });
+            });
+            
+            prevButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const prevStep = parseInt(this.getAttribute('data-prev'));
+                    goToStep(prevStep);
+                });
+            });
+            
+            // Go to specific step
+            function goToStep(step) {
+                // Hide current step
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                steps[currentStep - 1].classList.remove('active');
+                
+                // Show new step
+                document.getElementById(`step${step}`).classList.add('active');
+                steps[step - 1].classList.add('active');
+                
+                // Update progress bar
+                const progressPercentage = ((step - 1) / (steps.length - 1)) * 100;
+                progressBar.style.width = `${progressPercentage}%`;
+                
+                // Mark previous steps as completed
+                for (let i = 0; i < step - 1; i++) {
+                    steps[i].classList.add('completed');
+                }
+                
+                // Update current step
+                currentStep = step;
+            }
+            
+            // Step validation
+            function validateStep(step) {
+                let isValid = true;
+                
+                if (step === 1) {
+                    // Validate role selection
+                    if (!selectedRole) {
+                        alert('Please select your account type');
+                        isValid = false;
+                    }
+                } else if (step === 2) {
+                    // Validate personal information
+                    const fullName = document.getElementById('fullName').value;
+                    const email = document.getElementById('email').value;
+                    const dob = document.getElementById('dob').value;
+                    
+                    if (!fullName.trim()) {
+                        document.getElementById('nameError').style.display = 'block';
+                        isValid = false;
+                    } else {
+                        document.getElementById('nameError').style.display = 'none';
+                    }
+                    
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                        document.getElementById('emailError').style.display = 'block';
+                        isValid = false;
+                    } else {
+                        document.getElementById('emailError').style.display = 'none';
+                    }
+                    
+                    if (!dob) {
+                        document.getElementById('dobError').style.display = 'block';
+                        isValid = false;
+                    } else {
+                        document.getElementById('dobError').style.display = 'none';
+                    }
+                } else if (step === 4) {
+                    // Validate credentials
+                    const password = document.getElementById('password').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+                    const termsAgreement = document.getElementById('termsAgreement').checked;
+                    
+                    if (password.length < 8) {
+                        document.getElementById('passwordError').style.display = 'block';
+                        isValid = false;
+                    } else {
+                        document.getElementById('passwordError').style.display = 'none';
+                    }
+                    
+                    if (password !== confirmPassword) {
+                        document.getElementById('confirmPasswordError').style.display = 'block';
+                        isValid = false;
+                    } else {
+                        document.getElementById('confirmPasswordError').style.display = 'none';
+                    }
+                    
+                    if (!termsAgreement) {
+                        document.getElementById('termsError').style.display = 'block';
+                        isValid = false;
+                    } else {
+                        document.getElementById('termsError').style.display = 'none';
+                    }
+                }
+                
+                return isValid;
+            }
+            
+            // Form submission
+            registrationForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (validateStep(4)) {
+                    // Show loading state
+                    const submitBtn = document.getElementById('submitBtn');
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Creating Account...';
+                    submitBtn.disabled = true;
+                    
+                    try {
+                        // Collect form data
+                        const formData = {
+                            email: document.getElementById('email').value,
+                            password: document.getElementById('password').value,
+                            name: document.getElementById('fullName').value,
+                            role: selectedRole,
+                            phone: document.getElementById('phone').value,
+                            address: document.getElementById('address').value,
+                            date_of_birth: document.getElementById('dob').value,
+                            profile_image_url: document.getElementById('profileImageUrl').value || null,
+                            status: 'pending'
+                        };
+                        
+                        // Add role-specific fields
+                        if (selectedRole === 'student') {
+                            formData.roll_number = document.getElementById('rollNumber').value || null;
+                            formData.parent_name = document.getElementById('parentName').value || null;
+                            formData.parent_phone = document.getElementById('parentPhone').value || null;
+                            
+                            // If batch code is provided, we'll need to find the batch ID
+                            const batchCode = document.getElementById('batchCode').value;
+                            if (batchCode) {
+                                // In a real implementation, you would look up the batch ID here
+                                // For now, we'll just store the batch code
+                                formData.batch_code = batchCode;
+                            }
+                        } else if (selectedRole === 'teacher') {
+                            formData.subject_specialization = document.getElementById('subjectSpecialization').value || null;
+                            formData.experience = document.getElementById('experience').value ? parseInt(document.getElementById('experience').value) : null;
+                        } else if (selectedRole === 'admin') {
+                            // Admin-specific fields if needed
+                        }
+                        
+                        // Insert user into database
+                        const { data, error } = await supabase
+                            .from('users')
+                            .insert([formData])
+                            .select();
+                        
+                        if (error) {
+                            throw error;
+                        }
+                        
+                        // Show success message
+                        alert('Account created successfully! Your account is pending approval.');
+                        registrationForm.reset();
+                        goToStep(1);
+                        
+                    } catch (error) {
+                        console.error('Error creating account:', error);
+                        alert('Error creating account: ' + error.message);
+                    } finally {
+                        // Reset button state
+                        submitBtn.innerHTML = 'Create Account';
+                        submitBtn.disabled = false;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
